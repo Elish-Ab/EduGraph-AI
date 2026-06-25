@@ -163,14 +163,22 @@ export default function StudyPlanPage() {
         <Card className="bg-card border-border">
           <CardContent className="py-12 text-center">
             <Sparkles className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-            <p className="text-muted-foreground text-sm mb-4">No study plan yet. Generate one based on your gaps.</p>
-            <Button
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={() => generate.mutate()}
-              disabled={generate.isPending}
-            >
-              {generate.isPending ? "Generating…" : "Generate Study Plan"}
-            </Button>
+            {planData === null ? (
+              <>
+                <p className="text-muted-foreground text-sm mb-4">No study plan yet. Generate one based on your gaps.</p>
+                <Button
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                  onClick={() => generate.mutate()}
+                  disabled={generate.isPending}
+                >
+                  {generate.isPending ? "Generating…" : "Generate Study Plan"}
+                </Button>
+              </>
+            ) : (
+              <p className="text-muted-foreground text-sm">
+                No tasks yet — complete an exam first so the AI can identify your learning gaps and build a personalised plan.
+              </p>
+            )}
           </CardContent>
         </Card>
       )}
