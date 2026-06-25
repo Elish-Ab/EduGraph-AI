@@ -70,26 +70,43 @@ def find_nearest_clos(query: str, n: int = 3) -> list[dict]:
 
 # ── Ollama helpers ────────────────────────────────────────────────────────
 
+SYSTEM = "You are a helpful AI tutor. Always respond in English only. Never use any other language."
+
+
 async def _ollama_generate(prompt: str, stream: bool = False) -> str | AsyncGenerator:
     async with httpx.AsyncClient(timeout=120) as client:
         if not stream:
             resp = await client.post(
-                f"{OLLAMA_URL}/api/generate",
-                json={"model": MODEL, "prompt": prompt, "stream": False},
+                f"{OLLAMA_URL}/api/chat",
+                json={
+                    "model": MODEL,
+                    "messages": [
+                        {"role": "system", "content": SYSTEM},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "stream": False,
+                },
             )
             resp.raise_for_status()
-            return resp.json()["response"]
+            return resp.json()["message"]["content"]
 
         async def _stream() -> AsyncGenerator[str, None]:
             async with client.stream(
                 "POST",
-                f"{OLLAMA_URL}/api/generate",
-                json={"model": MODEL, "prompt": prompt, "stream": True},
+                f"{OLLAMA_URL}/api/chat",
+                json={
+                    "model": MODEL,
+                    "messages": [
+                        {"role": "system", "content": SYSTEM},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "stream": True,
+                },
             ) as r:
                 async for line in r.aiter_lines():
                     if line:
                         chunk = json.loads(line)
-                        if token := chunk.get("response"):
+                        if token := chunk.get("message", {}).get("content"):
                             yield token
                         if chunk.get("done"):
                             break

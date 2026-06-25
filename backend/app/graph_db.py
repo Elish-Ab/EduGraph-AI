@@ -8,10 +8,8 @@ _driver: AsyncDriver | None = None
 async def get_driver() -> AsyncDriver:
     global _driver
     if _driver is None:
-        _driver = AsyncGraphDatabase.driver(
-            settings.NEO4J_URI,
-            auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD),
-        )
+        auth = (settings.NEO4J_USER, settings.NEO4J_PASSWORD) if settings.NEO4J_USER else None
+        _driver = AsyncGraphDatabase.driver(settings.NEO4J_URI, auth=auth)
     return _driver
 
 
