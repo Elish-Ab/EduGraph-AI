@@ -41,8 +41,15 @@ export default function RegisterPage() {
     try {
       let user, token;
       try {
-        const res = await api.post("/auth/register", data);
-        ({ user, token } = res.data);
+        const res = await api.post("/auth/register", {
+          full_name: data.name,
+          email: data.email,
+          password: data.password,
+          role: data.role,
+          school_code: data.school_code,
+        });
+        user = res.data.user;
+        token = res.data.access_token;
       } catch {
         ({ user, token } = mockRegister(data));
       }

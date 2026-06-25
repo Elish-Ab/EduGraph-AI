@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     UPLOAD_DIR: str = "./data/uploads"
 
     # CORS
-    CORS_ORIGINS: list[str] = ["http://localhost:3000"]
+    CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:3001"]
 
 
 settings = Settings()
