@@ -48,7 +48,8 @@ export default function RegisterPage() {
           role: data.role,
           school_code: data.school_code,
         });
-        user = res.data.user;
+        const u = res.data.user;
+        user = { ...u, name: u.full_name, school_id: u.school_code };
         token = res.data.access_token;
       } catch {
         ({ user, token } = mockRegister(data));

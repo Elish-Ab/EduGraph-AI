@@ -20,7 +20,12 @@ export const useAuthStore = create<AuthState>()(
       profile: null,
       isAuthenticated: false,
       login: (user, token) => set({ user, token, isAuthenticated: true }),
-      logout: () => set({ user: null, token: null, profile: null, isAuthenticated: false }),
+      logout: () => {
+        if (typeof document !== "undefined") {
+          document.cookie = "edugraph-token=; path=/; max-age=0";
+        }
+        set({ user: null, token: null, profile: null, isAuthenticated: false });
+      },
       setProfile: (profile) => set({ profile }),
     }),
     { name: "edugraph-auth" }

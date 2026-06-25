@@ -14,12 +14,16 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+let redirecting = false;
+
 api.interceptors.response.use(
   (res) => res,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !redirecting) {
+      redirecting = true;
       useAuthStore.getState().logout();
       window.location.href = "/login";
+      setTimeout(() => { redirecting = false; }, 3000);
     }
     return Promise.reject(error);
   }

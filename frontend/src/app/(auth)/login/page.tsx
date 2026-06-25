@@ -48,7 +48,8 @@ export default function LoginPage() {
       let user, token;
       try {
         const res = await api.post("/auth/login", data);
-        user = res.data.user;
+        const u = res.data.user;
+        user = { ...u, name: u.full_name, school_id: u.school_code };
         token = res.data.access_token;
       } catch {
         ({ user, token } = mockLogin(data.email, data.password));
